@@ -19,21 +19,16 @@ public class DevelopersConverter {
     }
 
     public static DevelopersDTO fromDevelopers(DevelopersDAO developersDAO) {
-        return new DevelopersDTO(developersDAO.getName(), developersDAO.getAge(), developersDAO.getSex(), developersDAO.getIdCompany(), developersDAO.getSalary(), developersDAO.getSkills(), developersDAO.getProjects());
+        return new DevelopersDTO(developersDAO.getName(), developersDAO.getAge(), developersDAO.getSex(),
+                developersDAO.getIdCompany(), developersDAO.getSalary(),
+                developersDAO.getSkills(), developersDAO.getProjects());
     }
 
     public static DevelopersDAO toDevelopers(ResultSet resultSet) throws SQLException {
         DevelopersDAO developersDAO = new DevelopersDAO();
         try {
             while (resultSet.next()) {
-                developersDAO.setId(resultSet.getLong("id_developers"));
-                developersDAO.setName(resultSet.getString("name"));
-                developersDAO.setAge(resultSet.getInt("age"));
-                developersDAO.setSex(Sex.findByName(resultSet.getString("sex")));
-                developersDAO.setIdCompany(resultSet.getLong("id_company"));
-                developersDAO.setSalary(resultSet.getDouble("salary"));
-                developersDAO.setSkills(RelationshipsTables.getSkillsDeveloper(developersDAO.getId()));
-                developersDAO.setProjects(RelationshipsTables.getProjectDeveloper(developersDAO.getId()));
+                getDeveloperWithResultSet(resultSet, developersDAO);
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -49,20 +44,24 @@ public class DevelopersConverter {
         return books;
     }
 
-    private static DevelopersDAO prepareDevelopersDAO(ResultSet resultSet) throws SQLException {
+    private static DevelopersDAO prepareDevelopersDAO(ResultSet resultSet) {
         DevelopersDAO developersDAO = new DevelopersDAO();
         try {
-            developersDAO.setId(resultSet.getLong("id_developers"));
-            developersDAO.setName(resultSet.getString("name"));
-            developersDAO.setAge(resultSet.getInt("age"));
-            developersDAO.setSex(Sex.findByName(resultSet.getString("sex")));
-            developersDAO.setIdCompany(resultSet.getLong("id_company"));
-            developersDAO.setSalary(resultSet.getDouble("salary"));
+            getDeveloperWithResultSet(resultSet, developersDAO);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
         return developersDAO;
     }
 
-
+    private static void getDeveloperWithResultSet(ResultSet resultSet, DevelopersDAO developersDAO) throws Throwable {
+        developersDAO.setId(resultSet.getLong("id_developers"));
+        developersDAO.setName(resultSet.getString("name"));
+        developersDAO.setAge(resultSet.getInt("age"));
+        developersDAO.setSex(Sex.findByName(resultSet.getString("sex")));
+        developersDAO.setIdCompany(resultSet.getLong("id_company"));
+        developersDAO.setSalary(resultSet.getDouble("salary"));
+        developersDAO.setSkills(RelationshipsTables.getSkillsDeveloper(developersDAO.getId()));
+        developersDAO.setProjects(RelationshipsTables.getProjectDeveloper(developersDAO.getId()));
+    }
 }

@@ -23,14 +23,10 @@ public class SkillsConverter {
         SkillsDAO skillsDAO = new SkillsDAO();
         try {
             while (resultSet.next()) {
-                skillsDAO.setId(resultSet.getLong("id_skill"));
-                skillsDAO.setBranch(Branch.findByName(resultSet.getString("branch")));
-                skillsDAO.setLevel(Level.findByName(resultSet.getString("level")));
+                getSkillsWithResultSet(resultSet, skillsDAO);
             }
-        } catch (SQLException ex) {
+        } catch (Throwable ex) {
             ex.printStackTrace();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
         }
         return skillsDAO;
     }
@@ -43,12 +39,16 @@ public class SkillsConverter {
         return skillsDAOList;
     }
 
-    private static SkillsDAO prepareSkillsDAO(ResultSet resultSet) throws SQLException {
+    private static void getSkillsWithResultSet(ResultSet resultSet, SkillsDAO skillsDAO) throws Throwable {
+        skillsDAO.setId(resultSet.getLong("id_skill"));
+        skillsDAO.setBranch(Branch.findByName(resultSet.getString("branch")));
+        skillsDAO.setLevel(Level.findByName(resultSet.getString("level")));
+    }
+
+    private static SkillsDAO prepareSkillsDAO(ResultSet resultSet) {
         SkillsDAO skillsDAO = new SkillsDAO();
         try {
-            skillsDAO.setId(resultSet.getLong("id_skill"));
-            skillsDAO.setBranch(Branch.findByName(resultSet.getString("branch")));
-            skillsDAO.setLevel(Level.findByName(resultSet.getString("level")));
+            getSkillsWithResultSet(resultSet, skillsDAO);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

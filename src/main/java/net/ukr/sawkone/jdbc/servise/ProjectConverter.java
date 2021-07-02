@@ -24,12 +24,7 @@ public class ProjectConverter {
     public static ProjectsDAO toProjects(ResultSet resultSet) throws SQLException {
         ProjectsDAO projectsDAO = new ProjectsDAO();
         while (resultSet.next()) {
-            projectsDAO.setId(resultSet.getLong("id_project"));
-            projectsDAO.setNameProject(resultSet.getString("name_project"));
-            projectsDAO.setDate(resultSet.getObject("date_create", LocalDate.class));
-            projectsDAO.setIdCompany(resultSet.getLong("id_company"));
-            projectsDAO.setIdCustomer(resultSet.getLong("id_customer"));
-            projectsDAO.setCost(resultSet.getDouble("cost"));
+            getProjectsWithResultSet(resultSet, projectsDAO);
         }
         return projectsDAO;
     }
@@ -44,12 +39,16 @@ public class ProjectConverter {
 
     private static ProjectsDAO prepareProjectsDAO(ResultSet resultSet) throws SQLException {
         ProjectsDAO projectsDAO = new ProjectsDAO();
+        getProjectsWithResultSet(resultSet, projectsDAO);
+        return projectsDAO;
+    }
+
+    private static void getProjectsWithResultSet(ResultSet resultSet, ProjectsDAO projectsDAO) throws SQLException {
         projectsDAO.setId(resultSet.getLong("id_project"));
         projectsDAO.setNameProject(resultSet.getString("name_project"));
         projectsDAO.setDate(resultSet.getObject("date_create", LocalDate.class));
         projectsDAO.setIdCompany(resultSet.getLong("id_company"));
         projectsDAO.setIdCustomer(resultSet.getLong("id_customer"));
         projectsDAO.setCost(resultSet.getDouble("cost"));
-        return projectsDAO;
     }
 }

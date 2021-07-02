@@ -69,7 +69,7 @@ public class SkillsRepositories implements Repository<SkillsDAO> {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.err.println("Error. You cannot uninstall the skill right now");
         }
     }
 

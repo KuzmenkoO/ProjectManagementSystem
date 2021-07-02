@@ -20,9 +20,7 @@ public class CustomersConverter {
     public static CustomersDAO toCustomers(ResultSet resultSet) throws SQLException {
         CustomersDAO customersDAO = new CustomersDAO();
         while (resultSet.next()) {
-            customersDAO.setId(resultSet.getLong("id_customer"));
-            customersDAO.setNameCustomer(resultSet.getString("name_customer"));
-            customersDAO.setCity(resultSet.getString("city"));
+            getCustomerWithResultSet(resultSet, customersDAO);
         }
         return customersDAO;
     }
@@ -35,11 +33,15 @@ public class CustomersConverter {
         return customersDAOList;
     }
 
-    private static CustomersDAO prepareCustomersDAO(ResultSet resultSet) throws SQLException {
-        CustomersDAO customersDAO = new CustomersDAO();
+    private static void getCustomerWithResultSet(ResultSet resultSet, CustomersDAO customersDAO) throws SQLException {
         customersDAO.setId(resultSet.getLong("id_customer"));
         customersDAO.setNameCustomer(resultSet.getString("name_customer"));
         customersDAO.setCity(resultSet.getString("city"));
+    }
+
+    private static CustomersDAO prepareCustomersDAO(ResultSet resultSet) throws SQLException {
+        CustomersDAO customersDAO = new CustomersDAO();
+        getCustomerWithResultSet(resultSet, customersDAO);
         return customersDAO;
     }
 }

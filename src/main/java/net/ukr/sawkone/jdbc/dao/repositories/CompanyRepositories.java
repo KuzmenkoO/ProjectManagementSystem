@@ -68,7 +68,7 @@ public class CompanyRepositories implements Repository<CompaniesDAO> {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.err.println("Error. You cannot uninstall the company right now");
         }
     }
 

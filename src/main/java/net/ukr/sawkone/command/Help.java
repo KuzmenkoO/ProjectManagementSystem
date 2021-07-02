@@ -16,8 +16,8 @@ public class Help implements Command {
         view.write("exit - exit from an application");
         view.write("queries - display a list of default queries");
         view.write("company - show menu company");
-        view.write("project - show menu project");
-        view.write("developer - show menu developer");
+        view.write("projects - show menu project");
+        view.write("developers - show menu developer");
         view.write("customers - show menu customers");
     }
 

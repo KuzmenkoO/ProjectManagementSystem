@@ -115,13 +115,15 @@ public class DevelopersDAO {
 
     @Override
     public String toString() {
-        return "Developers{" +
+        return "DevelopersDAO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", sex=" + sex +
                 ", idCompany=" + idCompany +
                 ", salary=" + salary +
+                ", skills=" + skills +
+                ", projects=" + projects +
                 '}';
     }
 }

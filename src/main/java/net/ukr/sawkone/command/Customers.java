@@ -4,66 +4,64 @@ import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
 import net.ukr.sawkone.jdbc.dao.entity.CustomersDAO;
 import net.ukr.sawkone.jdbc.dao.repositories.CustomersRepositories;
 import net.ukr.sawkone.jdbc.dao.repositories.Repository;
+import net.ukr.sawkone.jdbc.servise.CheckEnteredData;
 import net.ukr.sawkone.view.View;
 
 public class Customers implements Command {
     private Repository<CustomersDAO> customersDAORepository;
     private View view;
+    private CheckEnteredData check;
 
     public Customers(View view, DatabaseConnectionManager cm) {
         this.view = view;
         this.customersDAORepository = new CustomersRepositories(cm);
+        this.check = new CheckEnteredData(view);
     }
 
     @Override
     public void process() {
         boolean isNotExit = true;
         while (isNotExit) {
-            view.write("Enter number command:\n1 - create;\n2 - delete by id;\n3 - update by id;\n4 - list Customers;" +
-                    "\n5 - find by id\n6 - exit the customers menu");
+            view.write("""
+                    Enter number command:
+                    1 - create;
+                    2 - delete by id;
+                    3 - update by id;
+                    4 - list Customers;
+                    5 - find by id
+                    6 - exit the customers menu""");
             int numberCommand = 0;
             try {
                 numberCommand = Integer.parseInt(view.read());
             } catch (Exception e) {
-                e.printStackTrace();
-                view.write("Enter number command");
-                numberCommand = Integer.parseInt(view.read());
+                view.write("Wrong command is entered");
             }
             switch (numberCommand) {
                 case 1 -> {
                     CustomersDAO customersDAO = new CustomersDAO();
-                    view.write("Enter name customer");
-                    customersDAO.setNameCustomer(view.read());
-                    view.write("Enter city customer");
-                    customersDAO.setCity(view.read());
+                    customersDAO.setNameCustomer(check.orLineIsEmpty("Enter name customer"));
+                    customersDAO.setCity(check.orLineIsEmpty("Enter city customer"));
                     System.out.println(customersDAORepository.create(customersDAO));
                 }
                 case 2 -> {
-                    view.write("Enter number id customer for delete");
-                    customersDAORepository.deleteById(Integer.parseInt(view.read()));
+                    customersDAORepository.deleteById(check.orNumberLong("Enter number id customer for delete"));
                     view.write("customer is delete");
                 }
                 case 3 -> {
                     CustomersDAO customersUpdate = new CustomersDAO();
-                    view.write("Enter number id customer for update");
-                    customersUpdate.setId(Long.parseLong(view.read()));
-                    view.write("Enter new name customer");
-                    customersUpdate.setNameCustomer(view.read());
-                    view.write("Enter new city customer");
-                    customersUpdate.setCity(view.read());
+                    customersUpdate.setId(check.orNumberLong("Enter number id customer for update"));
+                    customersUpdate.setNameCustomer(check.orLineIsEmpty("Enter new name customer"));
+                    customersUpdate.setCity(check.orLineIsEmpty("Enter new city customer"));
                     customersDAORepository.update(customersUpdate);
                     view.write("customer is update");
                 }
                 case 4 -> view.write(customersDAORepository.findAll().toString());
                 case 5 -> {
-                    view.write("Enter number id customer for find");
-                    long idCustomer = Long.parseLong(view.read());
+                    long idCustomer = check.orNumberLong("Enter number id customer for find");
                     view.write(customersDAORepository.findById(idCustomer).toString());
                 }
-                case 6 -> {
-                    isNotExit = false;
-                }
-                default -> view.write("select another command");
+                case 6 -> isNotExit = false;
+                default -> view.write("Select another command");
             }
         }
     }

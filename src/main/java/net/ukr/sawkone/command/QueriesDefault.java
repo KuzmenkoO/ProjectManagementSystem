@@ -13,7 +13,6 @@ public class QueriesDefault implements Command {
     public QueriesDefault(View view, DatabaseConnectionManager cm) {
         this.view = view;
         this.cm = cm;
-
     }
 
     @Override
@@ -25,20 +24,20 @@ public class QueriesDefault implements Command {
             try {
                 view.write("salary (amount) of all developers of a separate project\nenter the project number from 1 to 9");
                 idProject = Integer.parseInt(view.read());
-                System.out.println(RelationshipsTables.sumSalaryDevelopersByProject(idProject)); // Зарплата усіх розробників по проекту
+                System.out.println(RelationshipsTables.sumSalaryDevelopersByProject(idProject));
                 view.write("\nList of developers of a separate project by number - " + idProject);
-                System.out.println(RelationshipsTables.listDevelopersByProject(idProject)); // список разработчиков отдельного проекта;
+                System.out.println(RelationshipsTables.listDevelopersByProject(idProject));
                 isFieldBlank = false;
             } catch (Exception e) {
-                System.out.println("error is not a number, enter the number");
+                view.write("error is not a number, enter the number");
             }
         }
         view.write("\nList of all Java developers");
-        System.out.println(RelationshipsTables.listDevelopersByBranch(Branch.JAVA)); //список всех Java разработчиков;
+        System.out.println(RelationshipsTables.listDevelopersByBranch(Branch.JAVA));
         view.write("\nList of all middle developers");
-        System.out.println(RelationshipsTables.listDevelopersByLevel(Level.MIDDLE)); //список всех middle разработчиков
+        System.out.println(RelationshipsTables.listDevelopersByLevel(Level.MIDDLE));
         view.write("\nlist of projects");
-        System.out.println(RelationshipsTables.listProjectWithCountDeveloper()); //список проектов в следующем формате: дата создания - название проекта - количество разработчиков на этом проекте.
+        System.out.println(RelationshipsTables.listProjectWithCountDeveloper());
     }
 
     @Override

@@ -41,7 +41,6 @@ public class DevelopersRepositories implements Repository<DevelopersDAO> {
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, entity.getName());
             preparedStatement.setInt(2, entity.getAge());
-            System.out.println(entity.getSex().getName());
             preparedStatement.setString(3, entity.getSex().getName());
             preparedStatement.setLong(4, entity.getIdCompany());
             preparedStatement.setDouble(5, entity.getSalary());
@@ -77,7 +76,7 @@ public class DevelopersRepositories implements Repository<DevelopersDAO> {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.err.println("Error. You cannot uninstall the developer right now");
         }
     }
 

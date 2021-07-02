@@ -20,9 +20,7 @@ public class CompanyConverter {
     public static CompaniesDAO toCompany(ResultSet resultSet) throws SQLException {
         CompaniesDAO company = new CompaniesDAO();
         while (resultSet.next()) {
-            company.setId(resultSet.getLong("id_company"));
-            company.setNameCompany(resultSet.getString("name_company"));
-            company.setCity(resultSet.getString("city"));
+            getCompanyWithResultSet(resultSet, company);
         }
         return company;
     }
@@ -35,11 +33,15 @@ public class CompanyConverter {
         return companiesDAOList;
     }
 
+    private static void getCompanyWithResultSet(ResultSet resultSet, CompaniesDAO company) throws SQLException {
+        company.setId(resultSet.getLong("id_company"));
+        company.setNameCompany(resultSet.getString("name_company"));
+        company.setCity(resultSet.getString("city"));
+    }
+
     private static CompaniesDAO prepareCompanyDAO(ResultSet resultSet) throws SQLException {
         CompaniesDAO companiesDAO = new CompaniesDAO();
-        companiesDAO.setId(resultSet.getLong("id_company"));
-        companiesDAO.setNameCompany(resultSet.getString("name_company"));
-        companiesDAO.setCity(resultSet.getString("city"));
+        getCompanyWithResultSet(resultSet, companiesDAO);
         return companiesDAO;
     }
 }

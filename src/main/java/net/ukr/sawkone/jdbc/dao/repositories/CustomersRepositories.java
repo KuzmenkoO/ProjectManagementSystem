@@ -68,7 +68,7 @@ public class CustomersRepositories implements Repository<CustomersDAO> {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.err.println("Error. You cannot uninstall the customer right now");
         }
     }
 

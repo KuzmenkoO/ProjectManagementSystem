@@ -4,88 +4,69 @@ import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
 import net.ukr.sawkone.jdbc.dao.entity.DevelopersDAO;
 import net.ukr.sawkone.jdbc.dao.repositories.DevelopersRepositories;
 import net.ukr.sawkone.jdbc.dao.repositories.Repository;
-import net.ukr.sawkone.jdbc.dto.Sex;
+import net.ukr.sawkone.jdbc.servise.CheckEnteredData;
 import net.ukr.sawkone.view.View;
 
 public class Developers implements Command {
     private View view;
     private Repository<DevelopersDAO> developersDAORepository;
+    private CheckEnteredData check;
 
     public Developers(View view, DatabaseConnectionManager cm) {
         this.view = view;
         this.developersDAORepository = new DevelopersRepositories(cm);
+        this.check = new CheckEnteredData(view);
     }
 
     @Override
     public void process() {
         boolean isNotExit = true;
         while (isNotExit) {
-            view.write("Enter number command:\n1 - create;\n2 - delete by id;\n3 - update by id;\n4 - list developers;" +
-                    "\n5 - find by id\n6 - exit the developers menu");
+            view.write("""
+                    Enter number command:
+                    1 - create;
+                    2 - delete by id;
+                    3 - update by id;
+                    4 - list developers;
+                    5 - find by id
+                    6 - exit the developers menu""");
             int numberCommand = 0;
             try {
                 numberCommand = Integer.parseInt(view.read());
             } catch (Exception e) {
-                e.printStackTrace();
-                view.write("Enter number command");
-                numberCommand = Integer.parseInt(view.read());
+                view.write("Wrong command is entered");
             }
             switch (numberCommand) {
                 case 1 -> {
                     DevelopersDAO developersDAO = new DevelopersDAO();
-                    view.write("Enter the developer name");
-                    developersDAO.setName(view.read());
-                    view.write("Enter the age of the developer");
-                    developersDAO.setAge(Integer.parseInt(view.read()));
-                    view.write("Enter the developers sex - male or female");
-                    try {
-                        developersDAO.setSex(Sex.findByName(view.read().toLowerCase()));
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                        view.write("Enter - male  or - female");
-                    }
-                    view.write("Enter the id of the company where the developer works");
-                    developersDAO.setIdCompany(Long.parseLong(view.read()));
-                    view.write("Enter the developer's salary");
-                    developersDAO.setSalary(Double.parseDouble(view.read()));
+                    developersDAO.setName(check.orLineIsEmpty("Enter the developer name"));
+                    developersDAO.setAge(check.orNumberInt("Enter the age of the developer"));
+                    developersDAO.setSex(check.orGivenGender("Enter the developers sex - male or female"));
+                    developersDAO.setIdCompany(check.orNumberLong("Enter the id of the company where the developer works"));
+                    developersDAO.setSalary(check.orNumberDouble("Enter the developer's salary"));
                     System.out.println(developersDAORepository.create(developersDAO));
                 }
                 case 2 -> {
-                    view.write("Enter number id developers for delete");
-                    developersDAORepository.deleteById(Integer.parseInt(view.read()));
+                    developersDAORepository.deleteById(check.orNumberLong("Enter number id developers for delete"));
                     view.write("Developer is delete");
                 }
                 case 3 -> {
                     DevelopersDAO developersUpdate = new DevelopersDAO();
-                    view.write("Enter number id developers for update");
-                    developersUpdate.setId(Long.parseLong(view.read()));
-                    view.write("Enter a new developer name");
-                    developersUpdate.setName(view.read());
-                    view.write("Enter a new age of the developer");
-                    developersUpdate.setAge(Integer.parseInt(view.read()));
-                    view.write("Enter a new developers sex - male or female");
-                    try {
-                        developersUpdate.setSex(Sex.findByName(view.read()));
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                        view.write("Enter - male  or - female");
-                    }
-                    view.write("Enter a new id of the company where the developer works");
-                    developersUpdate.setIdCompany(Long.parseLong(view.read()));
-                    view.write("Enter a new developer's salary");
-                    developersUpdate.setSalary(Double.parseDouble(view.read()));
+                    developersUpdate.setId(check.orNumberLong("Enter number id developers for update"));
+                    developersUpdate.setName(check.orLineIsEmpty("Enter a new developer name"));
+                    developersUpdate.setAge(check.orNumberInt("Enter a new age of the developer"));
+                    developersUpdate.setSex(check.orGivenGender("Enter a new developers sex - male or female"));
+                    developersUpdate.setIdCompany(check.orNumberLong("Enter a new id of the company where the developer works"));
+                    developersUpdate.setSalary(check.orNumberDouble("Enter a new developer's salary"));
                     developersDAORepository.update(developersUpdate);
                     view.write("Developers is update");
                 }
                 case 4 -> view.write(developersDAORepository.findAll().toString());
                 case 5 -> {
-                    view.write("Enter the developer id number to search");
-                    long idCustomer = Long.parseLong(view.read());
+                    long idCustomer = check.orNumberLong("Enter the developer id number to search");
                     view.write(developersDAORepository.findById(idCustomer).toString());
                 }
-                case 6 -> {
-                    isNotExit = false;
-                }
+                case 6 -> isNotExit = false;
                 default -> view.write("Select another command");
             }
         }
