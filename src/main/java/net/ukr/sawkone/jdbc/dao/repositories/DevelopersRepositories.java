@@ -3,6 +3,7 @@ package net.ukr.sawkone.jdbc.dao.repositories;
 import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
 import net.ukr.sawkone.jdbc.dao.entity.DevelopersDAO;
 import net.ukr.sawkone.jdbc.servise.DevelopersConverter;
+import net.ukr.sawkone.view.View;
 
 import java.sql.*;
 import java.util.Collections;
@@ -18,9 +19,11 @@ public class DevelopersRepositories implements Repository<DevelopersDAO> {
             "salary=? WHERE id_developers=?;";
     private static final String DELETE = "DELETE FROM developers WHERE id_developers=?;";
     private final DatabaseConnectionManager connectionManager;
+    private View view;
 
-    public DevelopersRepositories(DatabaseConnectionManager connectionManager) {
+    public DevelopersRepositories(DatabaseConnectionManager connectionManager, View view) {
         this.connectionManager = connectionManager;
+        this.view = view;
     }
 
     public DevelopersDAO findById(long id) {
@@ -75,6 +78,7 @@ public class DevelopersRepositories implements Repository<DevelopersDAO> {
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
+            view.write("Developer is delete");
         } catch (SQLException ex) {
             System.err.println("Error. You cannot uninstall the developer right now");
         }

@@ -16,7 +16,7 @@ public class Projects implements Command {
 
     public Projects(View view, DatabaseConnectionManager cm) {
         this.view = view;
-        this.projectsDAORepository = new ProjectsRepositories(cm);
+        this.projectsDAORepository = new ProjectsRepositories(cm, view);
         this.check = new CheckEnteredData(view);
     }
 
@@ -48,10 +48,7 @@ public class Projects implements Command {
                     projectsDAO.setDate(LocalDate.now());
                     System.out.println(projectsDAORepository.create(projectsDAO));
                 }
-                case 2 -> {
-                    projectsDAORepository.deleteById(check.orNumberInt("Enter number id project for delete"));
-                    view.write("project is delete");
-                }
+                case 2 -> projectsDAORepository.deleteById(check.orNumberInt("Enter number id project for delete"));
                 case 3 -> {
                     ProjectsDAO projectsUpdate = new ProjectsDAO();
                     projectsUpdate.setId(check.orNumberLong("Enter number id project for update"));

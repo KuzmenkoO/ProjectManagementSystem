@@ -3,6 +3,7 @@ package net.ukr.sawkone.jdbc.dao.repositories;
 import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
 import net.ukr.sawkone.jdbc.dao.entity.CustomersDAO;
 import net.ukr.sawkone.jdbc.servise.CustomersConverter;
+import net.ukr.sawkone.view.View;
 
 import java.sql.*;
 import java.util.Collections;
@@ -16,9 +17,11 @@ public class CustomersRepositories implements Repository<CustomersDAO> {
     private static final String UPDATE = "UPDATE customers SET name_customer=?, city=? WHERE id_customer=?;";
     private static final String DELETE = "DELETE FROM customers WHERE id_customer=?;";
     private final DatabaseConnectionManager connectionManager;
+    private View view;
 
-    public CustomersRepositories(DatabaseConnectionManager connectionManager) {
+    public CustomersRepositories(DatabaseConnectionManager connectionManager, View view) {
         this.connectionManager = connectionManager;
+        this.view = view;
     }
 
     public CustomersDAO findById(long id) {
@@ -67,6 +70,7 @@ public class CustomersRepositories implements Repository<CustomersDAO> {
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
+            view.write("customer is delete");
         } catch (SQLException ex) {
             System.err.println("Error. You cannot uninstall the customer right now");
         }

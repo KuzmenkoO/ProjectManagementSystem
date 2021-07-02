@@ -14,7 +14,7 @@ public class Customers implements Command {
 
     public Customers(View view, DatabaseConnectionManager cm) {
         this.view = view;
-        this.customersDAORepository = new CustomersRepositories(cm);
+        this.customersDAORepository = new CustomersRepositories(cm, view);
         this.check = new CheckEnteredData(view);
     }
 
@@ -43,10 +43,7 @@ public class Customers implements Command {
                     customersDAO.setCity(check.orLineIsEmpty("Enter city customer"));
                     System.out.println(customersDAORepository.create(customersDAO));
                 }
-                case 2 -> {
-                    customersDAORepository.deleteById(check.orNumberLong("Enter number id customer for delete"));
-                    view.write("customer is delete");
-                }
+                case 2 -> customersDAORepository.deleteById(check.orNumberLong("Enter number id customer for delete"));
                 case 3 -> {
                     CustomersDAO customersUpdate = new CustomersDAO();
                     customersUpdate.setId(check.orNumberLong("Enter number id customer for update"));

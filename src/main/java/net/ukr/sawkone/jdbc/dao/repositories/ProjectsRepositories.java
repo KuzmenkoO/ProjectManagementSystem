@@ -3,6 +3,7 @@ package net.ukr.sawkone.jdbc.dao.repositories;
 import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
 import net.ukr.sawkone.jdbc.dao.entity.ProjectsDAO;
 import net.ukr.sawkone.jdbc.servise.ProjectConverter;
+import net.ukr.sawkone.view.View;
 
 import java.sql.*;
 import java.util.Collections;
@@ -19,9 +20,11 @@ public class ProjectsRepositories implements Repository<ProjectsDAO> {
             "WHERE id_project=?;";
     private static final String DELETE = "DELETE FROM projects WHERE id_project=?;";
     private final DatabaseConnectionManager connectionManager;
+    private View view;
 
-    public ProjectsRepositories(DatabaseConnectionManager connectionManager) {
+    public ProjectsRepositories(DatabaseConnectionManager connectionManager, View view) {
         this.connectionManager = connectionManager;
+        this.view = view;
     }
 
     public ProjectsDAO findById(long id) {
@@ -76,6 +79,7 @@ public class ProjectsRepositories implements Repository<ProjectsDAO> {
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
+            view.write("project is delete");
         } catch (SQLException ex) {
             System.err.println("Error. You cannot uninstall the project right now");
         }

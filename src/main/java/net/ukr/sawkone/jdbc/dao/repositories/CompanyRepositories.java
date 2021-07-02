@@ -3,6 +3,7 @@ package net.ukr.sawkone.jdbc.dao.repositories;
 import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
 import net.ukr.sawkone.jdbc.dao.entity.CompaniesDAO;
 import net.ukr.sawkone.jdbc.servise.CompanyConverter;
+import net.ukr.sawkone.view.View;
 
 import java.sql.*;
 import java.util.Collections;
@@ -16,9 +17,11 @@ public class CompanyRepositories implements Repository<CompaniesDAO> {
     private static final String UPDATE = "UPDATE companies SET name_company=?, city=? WHERE id_company=?;";
     private static final String DELETE = "DELETE FROM companies WHERE id_company=?;";
     private final DatabaseConnectionManager connectionManager;
+    private View view;
 
-    public CompanyRepositories(DatabaseConnectionManager connectionManager) {
+    public CompanyRepositories(DatabaseConnectionManager connectionManager, View view) {
         this.connectionManager = connectionManager;
+        this.view = view;
     }
 
     public CompaniesDAO findById(long id) {
@@ -67,6 +70,7 @@ public class CompanyRepositories implements Repository<CompaniesDAO> {
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
+            view.write("company is delete");
         } catch (SQLException ex) {
             System.err.println("Error. You cannot uninstall the company right now");
         }

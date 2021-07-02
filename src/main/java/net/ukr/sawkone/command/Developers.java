@@ -14,7 +14,7 @@ public class Developers implements Command {
 
     public Developers(View view, DatabaseConnectionManager cm) {
         this.view = view;
-        this.developersDAORepository = new DevelopersRepositories(cm);
+        this.developersDAORepository = new DevelopersRepositories(cm,view);
         this.check = new CheckEnteredData(view);
     }
 
@@ -46,10 +46,7 @@ public class Developers implements Command {
                     developersDAO.setSalary(check.orNumberDouble("Enter the developer's salary"));
                     System.out.println(developersDAORepository.create(developersDAO));
                 }
-                case 2 -> {
-                    developersDAORepository.deleteById(check.orNumberLong("Enter number id developers for delete"));
-                    view.write("Developer is delete");
-                }
+                case 2 -> developersDAORepository.deleteById(check.orNumberLong("Enter number id developers for delete"));
                 case 3 -> {
                     DevelopersDAO developersUpdate = new DevelopersDAO();
                     developersUpdate.setId(check.orNumberLong("Enter number id developers for update"));
