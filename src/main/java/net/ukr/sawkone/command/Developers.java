@@ -12,10 +12,10 @@ public class Developers implements Command {
     private Repository<DevelopersDAO> developersDAORepository;
     private CheckEnteredData check;
 
-    public Developers(View view, DatabaseConnectionManager cm) {
+    public Developers(View view, DatabaseConnectionManager cm, CheckEnteredData check) {
         this.view = view;
-        this.developersDAORepository = new DevelopersRepositories(cm,view);
-        this.check = new CheckEnteredData(view);
+        this.developersDAORepository = new DevelopersRepositories(cm, view);
+        this.check = check;
     }
 
     @Override
@@ -42,26 +42,26 @@ public class Developers implements Command {
                     developersDAO.setName(check.orLineIsEmpty("Enter the developer name"));
                     developersDAO.setAge(check.orNumberInt("Enter the age of the developer"));
                     developersDAO.setSex(check.orGivenGender("Enter the developers sex - male or female"));
-                    developersDAO.setIdCompany(check.orNumberLong("Enter the id of the company where the developer works"));
+                    developersDAO.setIdCompany(check.orReallyIsIdCompanies("Enter the id of the company where the developer works"));
                     developersDAO.setSalary(check.orNumberDouble("Enter the developer's salary"));
                     System.out.println(developersDAORepository.create(developersDAO));
                 }
-                case 2 -> developersDAORepository.deleteById(check.orNumberLong("Enter number id developers for delete"));
+                case 2 -> developersDAORepository.deleteById(check.orReallyIsIdDevelopers("Enter number id developers for delete"));
                 case 3 -> {
                     DevelopersDAO developersUpdate = new DevelopersDAO();
-                    developersUpdate.setId(check.orNumberLong("Enter number id developers for update"));
+                    developersUpdate.setId(check.orReallyIsIdDevelopers("Enter number id developers for update"));
                     developersUpdate.setName(check.orLineIsEmpty("Enter a new developer name"));
                     developersUpdate.setAge(check.orNumberInt("Enter a new age of the developer"));
                     developersUpdate.setSex(check.orGivenGender("Enter a new developers sex - male or female"));
-                    developersUpdate.setIdCompany(check.orNumberLong("Enter a new id of the company where the developer works"));
+                    developersUpdate.setIdCompany(check.orReallyIsIdCompanies("Enter a new id of the company where the developer works"));
                     developersUpdate.setSalary(check.orNumberDouble("Enter a new developer's salary"));
                     developersDAORepository.update(developersUpdate);
                     view.write("Developers is update");
                 }
                 case 4 -> view.write(developersDAORepository.findAll().toString());
                 case 5 -> {
-                    long idCustomer = check.orNumberLong("Enter the developer id number to search");
-                    view.write(developersDAORepository.findById(idCustomer).toString());
+                    long idDeveloper = check.orReallyIsIdDevelopers("Enter the developer id number to search");
+                    view.write(developersDAORepository.findById(idDeveloper).toString());
                 }
                 case 6 -> isNotExit = false;
                 default -> view.write("Select another command");

@@ -1,14 +1,28 @@
 package net.ukr.sawkone.jdbc.servise;
 
+import net.ukr.sawkone.jdbc.config.DatabaseConnectionManager;
+import net.ukr.sawkone.jdbc.dao.entity.CompaniesDAO;
+import net.ukr.sawkone.jdbc.dao.entity.CustomersDAO;
+import net.ukr.sawkone.jdbc.dao.entity.DevelopersDAO;
+import net.ukr.sawkone.jdbc.dao.entity.ProjectsDAO;
+import net.ukr.sawkone.jdbc.dao.repositories.*;
 import net.ukr.sawkone.jdbc.dto.Sex;
 import net.ukr.sawkone.view.View;
 
 public class CheckEnteredData {
     private final String errorMessage = "Error. The data entered is incorrect";
     private View view;
+    private Repository<DevelopersDAO> developersDAORepository;
+    private Repository<CompaniesDAO> companiesDAORepository;
+    private Repository<CustomersDAO> customersDAORepository;
+    private Repository<ProjectsDAO> projectsDAORepository;
 
-    public CheckEnteredData(View view) {
+    public CheckEnteredData(DatabaseConnectionManager cm, View view) {
         this.view = view;
+        this.developersDAORepository = new DevelopersRepositories(cm, view);
+        this.companiesDAORepository = new CompanyRepositories(cm, view);
+        this.customersDAORepository = new CustomersRepositories(cm, view);
+        this.projectsDAORepository = new ProjectsRepositories(cm, view);
     }
 
     public Long orNumberLong(String message) {
@@ -92,5 +106,61 @@ public class CheckEnteredData {
             }
         }
         return sex;
+    }
+
+    public long orReallyIsIdCompanies(String message) {
+        boolean isId = true;
+        long id = 0;
+        while (isId) {
+            id = companiesDAORepository.findById(orNumberLong(message)).getId();
+            if (id != 0) {
+                isId = false;
+            } else {
+                view.write("This id is not in the database Companies");
+            }
+        }
+        return id;
+    }
+
+    public long orReallyIsIdDevelopers(String message) {
+        boolean isId = true;
+        long id = 0;
+        while (isId) {
+            id = developersDAORepository.findById(orNumberLong(message)).getId();
+            if (id != 0) {
+                isId = false;
+            } else {
+                view.write("This id is not in the database Developers");
+            }
+        }
+        return id;
+    }
+
+    public long orReallyIsIdCustomers(String message) {
+        boolean isId = true;
+        long id = 0;
+        while (isId) {
+            id = customersDAORepository.findById(orNumberLong(message)).getId();
+            if (id != 0) {
+                isId = false;
+            } else {
+                view.write("This id is not in the database Customers");
+            }
+        }
+        return id;
+    }
+
+    public long orReallyIsIdProjects(String message) {
+        boolean isId = true;
+        long id = 0;
+        while (isId) {
+            id = projectsDAORepository.findById(orNumberLong(message)).getId();
+            if (id != 0) {
+                isId = false;
+            } else {
+                view.write("This id is not in the database Projects");
+            }
+        }
+        return id;
     }
 }

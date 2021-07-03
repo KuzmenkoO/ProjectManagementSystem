@@ -12,10 +12,10 @@ public class Customers implements Command {
     private View view;
     private CheckEnteredData check;
 
-    public Customers(View view, DatabaseConnectionManager cm) {
+    public Customers(View view, DatabaseConnectionManager cm, CheckEnteredData check) {
         this.view = view;
         this.customersDAORepository = new CustomersRepositories(cm, view);
-        this.check = new CheckEnteredData(view);
+        this.check = check;
     }
 
     @Override
@@ -43,10 +43,10 @@ public class Customers implements Command {
                     customersDAO.setCity(check.orLineIsEmpty("Enter city customer"));
                     System.out.println(customersDAORepository.create(customersDAO));
                 }
-                case 2 -> customersDAORepository.deleteById(check.orNumberLong("Enter number id customer for delete"));
+                case 2 -> customersDAORepository.deleteById(check.orReallyIsIdCustomers("Enter number id customer for delete"));
                 case 3 -> {
                     CustomersDAO customersUpdate = new CustomersDAO();
-                    customersUpdate.setId(check.orNumberLong("Enter number id customer for update"));
+                    customersUpdate.setId(check.orReallyIsIdCustomers("Enter number id customer for update"));
                     customersUpdate.setNameCustomer(check.orLineIsEmpty("Enter new name customer"));
                     customersUpdate.setCity(check.orLineIsEmpty("Enter new city customer"));
                     customersDAORepository.update(customersUpdate);
@@ -54,7 +54,7 @@ public class Customers implements Command {
                 }
                 case 4 -> view.write(customersDAORepository.findAll().toString());
                 case 5 -> {
-                    long idCustomer = check.orNumberLong("Enter number id customer for find");
+                    long idCustomer = check.orReallyIsIdCustomers("Enter number id customer for find");
                     view.write(customersDAORepository.findById(idCustomer).toString());
                 }
                 case 6 -> isNotExit = false;

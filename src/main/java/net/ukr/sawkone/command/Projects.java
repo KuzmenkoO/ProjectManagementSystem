@@ -14,10 +14,10 @@ public class Projects implements Command {
     private Repository<ProjectsDAO> projectsDAORepository;
     private CheckEnteredData check;
 
-    public Projects(View view, DatabaseConnectionManager cm) {
+    public Projects(View view, DatabaseConnectionManager cm, CheckEnteredData check) {
         this.view = view;
         this.projectsDAORepository = new ProjectsRepositories(cm, view);
-        this.check = new CheckEnteredData(view);
+        this.check = check;
     }
 
     @Override
@@ -43,26 +43,26 @@ public class Projects implements Command {
                     ProjectsDAO projectsDAO = new ProjectsDAO();
                     projectsDAO.setNameProject(check.orLineIsEmpty("Enter name project"));
                     projectsDAO.setCost(check.orNumberDouble("Enter cost project"));
-                    projectsDAO.setIdCustomer(check.orNumberLong("Enter id customer project"));
-                    projectsDAO.setIdCompany(check.orNumberLong("Enter id company project"));
+                    projectsDAO.setIdCustomer(check.orReallyIsIdCustomers("Enter the customer id for the project"));
+                    projectsDAO.setIdCompany(check.orReallyIsIdCompanies("Enter the company id for the project"));
                     projectsDAO.setDate(LocalDate.now());
                     System.out.println(projectsDAORepository.create(projectsDAO));
                 }
-                case 2 -> projectsDAORepository.deleteById(check.orNumberInt("Enter number id project for delete"));
+                case 2 -> projectsDAORepository.deleteById(check.orReallyIsIdProjects("Enter number id project for delete"));
                 case 3 -> {
                     ProjectsDAO projectsUpdate = new ProjectsDAO();
-                    projectsUpdate.setId(check.orNumberLong("Enter number id project for update"));
+                    projectsUpdate.setId(check.orReallyIsIdProjects("Enter number id project for update"));
                     projectsUpdate.setNameProject(check.orLineIsEmpty("Enter new name project"));
                     projectsUpdate.setCost(check.orNumberDouble("Enter new cost project"));
-                    projectsUpdate.setIdCustomer(check.orNumberLong("Enter new id customer project"));
-                    projectsUpdate.setIdCompany(check.orNumberLong("Enter new id company project"));
+                    projectsUpdate.setIdCustomer(check.orReallyIsIdCustomers("Enter a new customer id for the project"));
+                    projectsUpdate.setIdCompany(check.orReallyIsIdCompanies("Enter a new company id for the project"));
                     projectsUpdate.setDate(LocalDate.now());
                     projectsDAORepository.update(projectsUpdate);
                     view.write("project is update");
                 }
                 case 4 -> view.write(projectsDAORepository.findAll().toString());
                 case 5 -> {
-                    long idProject = check.orNumberLong("Enter number id project for find");
+                    long idProject = check.orReallyIsIdProjects("Enter number id project for find");
                     view.write(projectsDAORepository.findById(idProject).toString());
                 }
                 case 6 -> isNotExit = false;

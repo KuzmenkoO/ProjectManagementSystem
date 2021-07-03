@@ -12,10 +12,10 @@ public class Company implements Command {
     private View view;
     private CheckEnteredData check;
 
-    public Company(View view, DatabaseConnectionManager cm) {
+    public Company(View view, DatabaseConnectionManager cm, CheckEnteredData check) {
         this.view = view;
-        this.companiesDAORepository = new CompanyRepositories(cm,view);
-        this.check = new CheckEnteredData(view);
+        this.companiesDAORepository = new CompanyRepositories(cm, view);
+        this.check = check;
     }
 
     @Override
@@ -43,10 +43,10 @@ public class Company implements Command {
                     companiesDAO.setCity(check.orLineIsEmpty("Enter city company"));
                     System.out.println(companiesDAORepository.create(companiesDAO));
                 }
-                case 2 -> companiesDAORepository.deleteById(check.orNumberLong("Enter number id company for delete"));
+                case 2 -> companiesDAORepository.deleteById(check.orReallyIsIdCompanies("Enter number id company for delete"));
                 case 3 -> {
                     CompaniesDAO companiesUpdate = new CompaniesDAO();
-                    companiesUpdate.setId(check.orNumberLong("Enter number id company for update"));
+                    companiesUpdate.setId(check.orReallyIsIdCompanies("Enter number id company for update"));
                     companiesUpdate.setNameCompany(check.orLineIsEmpty("Enter new name company"));
                     companiesUpdate.setCity(check.orLineIsEmpty("Enter new city company"));
                     companiesDAORepository.update(companiesUpdate);
@@ -54,7 +54,7 @@ public class Company implements Command {
                 }
                 case 4 -> view.write(companiesDAORepository.findAll().toString());
                 case 5 -> {
-                    long idCompany = check.orNumberLong("Enter number id company for find");
+                    long idCompany = check.orReallyIsIdCompanies("Enter number id company for find");
                     view.write(companiesDAORepository.findById(idCompany).toString());
                 }
                 case 6 -> isNotExit = false;
